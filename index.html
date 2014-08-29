@@ -1,22 +1,37 @@
+<!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <title>qqscript demo</title>
+<meta name="description" content="qqscript is a text expansion system for quick entry of non-alphabetical characters on mobile devices">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <!--
     version 0.1
 
     TODO:
-    * bootstrap CSS
-    * Copyright and license
+    * Indent this source
+    * Add README.md
+    * Put it on github, fix 'fork me on github' band
+    * register domain qqscript.org, redirect to github.io
+    * Remove explicit protocol from the stylesheet links
+    * Upload to the domain
+    * Google Analytics
+    * Feedback section with e-mail, links to twitter, github, website
+    * How to escape actual literal qq-sequences? Need to track delta
     * mobile-first responsive design, test on iPhone and iPad
-    * side-by-side combo help card
+    * Submit to reddit, hackernews
     * inline help: press 'qqw' then type the name of a glyph (e.g. 'comma')
-    then it is replaced by qq-sequence ('qqc' in that case). On the next
-    keypress it is replaced by the actual glyph
+      then it is replaced by qq-sequence ('qqc' in that case). On the next
+      keypress it is replaced by the actual glyph
     * Extended alphabet, probably with common prefix like 'o' (for 'other'),
-    e.g. 'qqoalpha' -> α, 'qqcgamma' -> 'Γ' etc
-    * Check my old records with mappings
+      e.g. 'qqoalpha' -} α, 'qqcgamma' -} 'Γ' etc
     -->
 <script>
+
     var prefixes_taken = 'abcdefghilmpqrsvxwz';
     var prefixes_free = 'knuvxy';
     var qqmap = {
@@ -84,7 +99,7 @@
 
                      // v NONE
 
-        'qqw': 'TODO: help', //w  RESERVED for future use in inline help
+        // 'qqw': 'TODO: help', //w  RESERVED for future use in inline help
 
                      // x NONE
 
@@ -92,44 +107,144 @@
 
         'qqzz': '2'  // z single
     }
-    var qqfunc = function(editorarea) {
-        var current_start = 0;
-        var s = editorarea.value;
-        var result = '';
-        while (true) {
-            var pos = s.indexOf('qq', current_start);
-            if (pos == -1) {
-                result += s.substring(current_start);
-                break;
+
+    $( document ).ready( function () {
+            var s = ''
+            var cnt = 1
+            for (var key in qqmap) {
+                if (qqmap.hasOwnProperty(key)) {
+                    s += key + ': ' + qqmap[key]
+                    if (cnt % 4 == '0') {
+                        s += '\n'
+                    } else {
+                        s += '    '
+                    }
+                    cnt++
+                }
             }
-            var inc = 2;
+            $('#refcard').html(s)
+    })
+
+    var qqfunc = function(editorarea) {
+        var current_start = 0
+        var s = editorarea.value
+        var result = ''
+        while (true) {
+            var pos = s.indexOf('qq', current_start)
+            if (pos == -1) {
+                result += s.substring(current_start)
+                break
+            }
+            var inc = 2
             var combo = 'qq'
             var replacement = 'qq'
             while (pos + inc < s.length) {
+                var c = s[pos + inc]
+                if (inc > 4 || c<'a' || c>'z') {
+                    break
+                }
                 combo += s[pos + inc]
                 if (combo in qqmap) {
-                    replacement = qqmap[combo];
+                    replacement = qqmap[combo]
                 } else {
-                    replacement = combo;
+                    replacement = combo
                 }
-                inc += 1;
+                inc += 1
             }
-            result += s.substring(current_start, pos - current_start);
+            result += s.substring(current_start, pos)
             result += replacement
-            current_start = pos + inc;
+            current_start = pos + inc
         }
         editorarea.value = result
     }
 </script>
-<head>
+</head>
 <body>
-<h1>qqscript</h1>
+<!-- github fork band -->
+<a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+
+       <div class="jumbotron">
+            <div class="container">
+<div class="row">
+<div class="col-md-12">
+                <h1>qqscript</h1>
 <p>
     <strong>qqscript</strong> is a system for quick entry of non-letter characters on
-    mobile devices. Character is entered by entering 'qq' then usually two (in rare cases one or more than two
-    letters of mnemonic code). That saves the typer the pain of switching to the additional layouts on a mobile
+    mobile devices. Character is entered by entering 'qq' then two
+    letters of mnemonic code. That saves the typer the pain of switching to the additional layouts on a mobile
     keyboard.
 </p>
-<textarea name="editor" rows="30" cols="80" onkeyup="qqfunc(this);"></textarea>
+</div>
+</div>
+            </div>
+        </div>
+<div class="container">
+
+<div class="row">
+<div class="col-md-12">
+<p>
+    Mobile keyboards are small and for typing the text with lots of non-alphabetic characters or digits you have to 
+    switch to numeric or special characters keyboard. To save time and context-switching qqscript allows you to type
+    'qq' and then two-letter mnemonic sequence for non-alphabetic characters. 'qq' is very unlikely to occur in natural
+    English text or programming code, and 'q' is conveniently located in thetop-left corner.
+    </p>
+    <p>
+    Digits may be entered by typing qq and then two letters that graphically resemble the digit. From 0 to 9 these letters are
+    <strong>oizehsgtbj</strong>. You use lowercase letters for entry, but to memorize letters you may find it more onvenient to
+    remember capital letters <strong>OIZENHSGTBJ</strong>. So for example to enter '7' you type 'qqtt'.
+    </p>
+    <p>
+    Special characters can be entered using two letters of a mnemonic. Sometimes it is first two letters of the character name
+    (e.g. 'qqam' for '&amp;', "ampersand") or two first letters of the composite name ('qqrc' for '}', right curly bracket) or well-known
+    mnemonic from html ('qqlt' for '&lt;', "less than") etc.
+    
+    </p>
+    <p>
+    Try qqscript by entering sequences from the reference card.
+    </p>
+</div>
+</div>
+<div class="row">
+<div class="col-md-6">
+<textarea name="editor" rows="20" style="width:100%;" onkeyup="qqfunc(this);"></textarea>
+</div>
+<div class="col-md-6">
+    <h2>Reference card</h2>
+    <pre id="refcard">
+    </pre>
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-12">
+    <h2>Possible future development</h2>
+    <ul>
+        <li>Make it possible to enter valid qq-sequence without substitution using some form of escaping</li>
+        <li>Introduce inline help. For example typing 'qqwcomma' would be substituted to 'qqcm' and changed to the actual comma (',') on the next keypress.
+        Mnemonic for 'w' is 'which'.</li>
+        <li>More glyphs, like copyright signs, yen and euro signs, greek alphabet letters etc. For example 'qqxalpha' would yield lowercase greek letter alpha ('α'), 
+        and 'qqcgamma' would yield greek capital letter Gamma ('Γ') etc.</li>
+    </ul>
+    <h2>License</h2>
+    <pre style="white-space:pre-wrap;word-wrap:break-word;">
+Copyright (c) 2014, Artem Frolov
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+    </pre>
+</div>
+</div>
+
+<hr/>
+<footer>&copy; (2014) Artem Frolov</footer>
+</div>
 </body>
 </html>
