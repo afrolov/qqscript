@@ -1,0 +1,135 @@
+<html>
+<head>
+<title>qqscript demo</title>
+    <!--
+    version 0.1
+
+    TODO:
+    * bootstrap CSS
+    * Copyright and license
+    * mobile-first responsive design, test on iPhone and iPad
+    * side-by-side combo help card
+    * inline help: press 'qqw' then type the name of a glyph (e.g. 'comma')
+    then it is replaced by qq-sequence ('qqc' in that case). On the next
+    keypress it is replaced by the actual glyph
+    * Extended alphabet, probably with common prefix like 'o' (for 'other'),
+    e.g. 'qqoalpha' -> α, 'qqcgamma' -> 'Γ' etc
+    * Check my old records with mappings
+    -->
+<script>
+    var prefixes_taken = 'abcdefghilmpqrsvxwz';
+    var prefixes_free = 'knuvxy';
+    var qqmap = {
+        'qqam': '&', // a
+        'qqap': '\'',
+        'qqat': '@',
+
+        'qqbb': '8', // b
+        'qqbs': '\\',
+
+        'qqcm': ',', // c
+        'qqcr': '^',
+
+        'qqds': '$', // d single
+
+        'qqee': '3', // e
+        'qqem': '!',
+        'qqeq': '=',
+
+        'qqfs': '/', // f single
+
+        'qqgg': '6', // g
+        'qqgt': '>',
+
+        'qqha': '#', // h
+        'qqhh': '4',
+
+        'qqii': '1', // i
+        'qqip': '|',
+
+        'qqjj': '9', // j
+
+                     // k NONE
+
+        'qqlc': '{', // l
+        'qqlb': '(',
+        'qqlt': '<',
+        'qqls': '[',
+
+        'qqmn': '-', // m single
+
+                     // n NONE
+
+        'qqoo': '0', // o single
+
+        'qqpc': '%', // p
+        'qqpl': '+',
+        'qqpt': '.',
+
+        'qqqu': '"', // q
+        'qqqm': '?',
+
+        'qqrb': ')', // r
+        'qqrc': '}',
+        'qqrs': ']',
+
+        'qqsd': '$', // s
+        'qqsc': ';',
+        'qqss': '5',
+        'qqst': '*',
+
+        'qqtt': '7', // t single
+
+                     // u NONE
+
+                     // v NONE
+
+        'qqw': 'TODO: help', //w  RESERVED for future use in inline help
+
+                     // x NONE
+
+                     // y NONE
+
+        'qqzz': '2'  // z single
+    }
+    var qqfunc = function(editorarea) {
+        var current_start = 0;
+        var s = editorarea.value;
+        var result = '';
+        while (true) {
+            var pos = s.indexOf('qq', current_start);
+            if (pos == -1) {
+                result += s.substring(current_start);
+                break;
+            }
+            var inc = 2;
+            var combo = 'qq'
+            var replacement = 'qq'
+            while (pos + inc < s.length) {
+                combo += s[pos + inc]
+                if (combo in qqmap) {
+                    replacement = qqmap[combo];
+                } else {
+                    replacement = combo;
+                }
+                inc += 1;
+            }
+            result += s.substring(current_start, pos - current_start);
+            result += replacement
+            current_start = pos + inc;
+        }
+        editorarea.value = result
+    }
+</script>
+<head>
+<body>
+<h1>qqscript</h1>
+<p>
+    <strong>qqscript</strong> is a system for quick entry of non-letter characters on
+    mobile devices. Character is entered by entering 'qq' then usually two (in rare cases one or more than two
+    letters of mnemonic code). That saves the typer the pain of switching to the additional layouts on a mobile
+    keyboard.
+</p>
+<textarea name="editor" rows="30" cols="80" onkeyup="qqfunc(this);"></textarea>
+</body>
+</html>
